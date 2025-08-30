@@ -1,0 +1,93 @@
+;; ========================================
+;; Tally Dashboard Integration TDL
+;; ========================================
+;; This TDL exposes collections for dashboard integration
+
+;; 1. Sales Bills Collection
+[Collection: Dashboard Sales Bills]
+    Type            : Voucher
+    Is ODBC         : Yes
+    ODBCTableName   : DashboardSalesBills
+    
+    ;; Filter for Sales vouchers only
+    Filter          : Sales Vouchers Only
+    
+    ;; Expose these fields to ODBC
+    SQLValues       : VoucherNumber : $VoucherNumber
+    SQLValues       : VoucherDate   : $Date
+    SQLValues       : PartyName     : $PartyLedgerName
+    SQLValues       : Amount        : $Amount
+    SQLValues       : VoucherType   : $VoucherTypeName
+    SQLValues       : Reference     : $Reference
+
+;; 2. Receipt Vouchers Collection  
+[Collection: Dashboard Receipt Vouchers]
+    Type            : Voucher
+    Is ODBC         : Yes
+    ODBCTableName   : DashboardReceiptVouchers
+    
+    ;; Filter for Receipt vouchers only
+    Filter          : Receipt Vouchers Only
+    
+    ;; Expose these fields to ODBC
+    SQLValues       : VoucherNumber : $VoucherNumber
+    SQLValues       : VoucherDate   : $Date
+    SQLValues       : PartyName     : $PartyLedgerName
+    SQLValues       : Amount        : $Amount
+    SQLValues       : VoucherType   : $VoucherTypeName
+    SQLValues       : Reference     : $Reference
+    SQLValues       : Narration     : $Narration
+
+;; 3. All Outstanding Bills Collection
+[Collection: Dashboard Outstanding Bills]
+    Type            : Bill
+    Is ODBC         : Yes
+    ODBCTableName   : DashboardOutstandingBills
+    
+    ;; Only bills with pending amounts
+    Filter          : Bills With Balance
+    
+    ;; Expose bill details
+    SQLValues       : BillName      : $Name
+    SQLValues       : BillDate      : $BillDate
+    SQLValues       : PartyName     : $PartyLedgerName
+    SQLValues       : BillAmount    : $BillCreditAmount
+    SQLValues       : PendingAmount : $ClosingBalance
+
+;; ========================================
+;; FILTERS
+;; ========================================
+
+[Filter: Sales Vouchers Only]
+    ;; Only include Sales type vouchers
+    Belongs         : Yes
+    BelongsTo       : Sales Vouchers
+
+[Filter: Receipt Vouchers Only]
+    ;; Only include Receipt type vouchers  
+    Belongs         : Yes
+    BelongsTo       : Receipt Vouchers
+
+[Filter: Bills With Balance]
+    ;; Only bills that have pending amounts
+    Not             : $ClosingBalance = 0
+
+;; ========================================
+;; SYSTEM COLLECTIONS
+;; ========================================
+
+[Collection: Sales Vouchers]
+    Type            : Voucher
+    Filter          : VouchTypeSales
+
+[Collection: Receipt Vouchers] 
+    Type            : Voucher
+    Filter          : VouchTypeReceipt
+
+[Filter: VouchTypeSales]
+    ;; Match sales voucher types
+    $$IsSales       : $VoucherTypeName
+
+[Filter: VouchTypeReceipt]
+    ;; Match receipt voucher types  
+    $$IsReceipt     : $VoucherTypeName

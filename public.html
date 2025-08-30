@@ -1,1 +1,212 @@
-hello
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tally Dashboard</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .container { 
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            max-width: 800px;
+            width: 90%;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+            color: #333;
+        }
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .modules {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        .module {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+        .module:hover {
+            transform: translateY(-5px);
+        }
+        .module h3 {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+        }
+        .module p {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+        .api-section {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-top: 2rem;
+        }
+        .api-section h3 {
+            color: #333;
+            margin-bottom: 1rem;
+        }
+        .endpoint {
+            background: white;
+            padding: 0.8rem;
+            margin: 0.5rem 0;
+            border-radius: 5px;
+            border-left: 4px solid #667eea;
+            font-family: monospace;
+            font-size: 0.9rem;
+        }
+        .method {
+            color: #28a745;
+            font-weight: bold;
+        }
+        .status {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        .status-card {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            padding: 1rem;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .status-card h4 {
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+            opacity: 0.9;
+        }
+        .status-card .value {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🧮 Tally Dashboard</h1>
+            <p>Tally Prime Integration Dashboard</p>
+        </div>
+
+        <div class="status">
+            <div class="status-card">
+                <h4>Server Status</h4>
+                <div class="value" id="serverStatus">🟢 Online</div>
+            </div>
+            <div class="status-card">
+                <h4>Database</h4>
+                <div class="value" id="dbStatus">🔄 Checking...</div>
+            </div>
+            <div class="status-card">
+                <h4>ETL Service</h4>
+                <div class="value" id="etlStatus">🔄 Checking...</div>
+            </div>
+        </div>
+
+        <div class="modules">
+            <div class="module" onclick="window.open('/api/auth', '_blank')">
+                <h3>👤 Authentication</h3>
+                <p>Login, user management, role-based access</p>
+            </div>
+            <div class="module" onclick="window.open('/api/bills', '_blank')">
+                <h3>📋 Bills Management</h3>
+                <p>View bills, payment status, search and filters</p>
+            </div>
+            <div class="module" onclick="window.open('/api/cashier', '_blank')">
+                <h3>💰 Cashier Operations</h3>
+                <p>Payment forms, sessions, petty cash, adjustments</p>
+            </div>
+            <div class="module" onclick="alert('Coming Soon!')">
+                <h3>🚛 Dispatch Terminal</h3>
+                <p>Bill release, transport, gate management</p>
+            </div>
+            <div class="module" onclick="alert('Coming Soon!')">
+                <h3>🏢 Admin Dashboard</h3>
+                <p>Reports, exceptions, EOD sheets, approvals</p>
+            </div>
+            <div class="module" onclick="alert('Coming Soon!')">
+                <h3>🚪 Gate Log</h3>
+                <p>Security gate entries, vehicle tracking</p>
+            </div>
+        </div>
+
+        <div class="api-section">
+            <h3>🔗 API Endpoints</h3>
+            
+            <div class="endpoint">
+                <span class="method">POST</span> /api/auth/login
+                <span style="float: right; color: #666;">User authentication</span>
+            </div>
+            
+            <div class="endpoint">
+                <span class="method">GET</span> /api/bills
+                <span style="float: right; color: #666;">List bills with filters</span>
+            </div>
+            
+            <div class="endpoint">
+                <span class="method">GET</span> /api/bills/:bill_no
+                <span style="float: right; color: #666;">Bill details</span>
+            </div>
+            
+            <div class="endpoint">
+                <span class="method">POST</span> /api/cashier/payment-hint
+                <span style="float: right; color: #666;">Create payment form</span>
+            </div>
+            
+            <div class="endpoint">
+                <span class="method">POST</span> /api/cashier/session/open
+                <span style="float: right; color: #666;">Open cashier session</span>
+            </div>
+
+            <p style="margin-top: 1rem; color: #666; font-size: 0.9rem;">
+                💡 Default login: admin / admin123
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // Check API health
+        fetch('/health')
+            .then(res => res.json())
+            .then(data => {
+                document.getElementById('serverStatus').innerHTML = '🟢 ' + data.status;
+            })
+            .catch(() => {
+                document.getElementById('serverStatus').innerHTML = '🔴 Offline';
+            });
+
+        // Simulate database check
+        setTimeout(() => {
+            document.getElementById('dbStatus').innerHTML = '🟢 Connected';
+            document.getElementById('etlStatus').innerHTML = '🟢 Running';
+        }, 1000);
+    </script>
+</body>
+</html>

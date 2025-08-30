@@ -1,0 +1,35 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm install)",
+      "Bash(copy .env.example .env)",
+      "Bash(psql:*)",
+      "Bash(createdb:*)",
+      "Bash(node:*)",
+      "Bash(timeout 10s npm run dev)",
+      "Bash(npm test:*)",
+      "Bash(npm run migrate:*)",
+      "Bash(timeout 15s npm run dev)",
+      "Bash(curl:*)",
+      "Bash(taskkill:*)",
+      "Bash(PGPASSWORD=admin123 psql -U postgres -d tally_dashboard -c \"\nCREATE TABLE IF NOT EXISTS petty_cash (\n  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),\n  session_id UUID REFERENCES cashier_session(id),\n  amount DECIMAL(15,2) NOT NULL,\n  purpose VARCHAR(200) NOT NULL,\n  vendor VARCHAR(100),\n  photo_path VARCHAR(500),\n  approved_by UUID REFERENCES users(id),\n  approved_at TIMESTAMP,\n  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP\n);\n\nCREATE TABLE IF NOT EXISTS till_adjustment (\n  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),\n  session_id UUID REFERENCES cashier_session(id),\n  type VARCHAR(20) NOT NULL CHECK (type IN (''ADD_TO_TILL'', ''REMOVE_FROM_TILL'')),\n  amount DECIMAL(15,2) NOT NULL,\n  reason VARCHAR(200) NOT NULL,\n  approved_by UUID REFERENCES users(id),\n  approved_at TIMESTAMP,\n  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP\n);\n\nCREATE TABLE IF NOT EXISTS cheque_register (\n  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),\n  bill_no VARCHAR(50) REFERENCES bill(bill_no),\n  cheque_no VARCHAR(50) NOT NULL,\n  bank VARCHAR(100) NOT NULL,\n  amount DECIMAL(15,2) NOT NULL,\n  status VARCHAR(20) DEFAULT ''PENDING'' CHECK (status IN (''PENDING'', ''DEPOSITED'', ''CLEARED'', ''BOUNCED'')),\n  deposit_batch_id UUID,\n  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP\n);\n\nCREATE TABLE IF NOT EXISTS deposit_batch (\n  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),\n  bank_name VARCHAR(100) NOT NULL,\n  deposit_date DATE NOT NULL,\n  total_cash DECIMAL(15,2) DEFAULT 0,\n  total_cheque DECIMAL(15,2) DEFAULT 0,\n  prepared_by UUID REFERENCES users(id),\n  approved_by UUID REFERENCES users(id),\n  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP\n);\n\nCREATE TABLE IF NOT EXISTS digital_payment_ref (\n  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),\n  bill_no VARCHAR(50) REFERENCES bill(bill_no),\n  method VARCHAR(20) NOT NULL CHECK (method IN (''UPI'', ''CARD'', ''NEFT'', ''RTGS'')),\n  reference_no VARCHAR(100) NOT NULL,\n  amount DECIMAL(15,2) NOT NULL,\n  status VARCHAR(20) DEFAULT ''PENDING'' CHECK (status IN (''PENDING'', ''MATCHED'', ''UNMATCHED'')),\n  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP\n);\n\nSELECT ''Tables created successfully'' as result;\n\")",
+      "Bash(PGPASSWORD=admin123 psql -U postgres -d tally_dashboard -c \"\nINSERT INTO bill (bill_no, bill_date, party_name, amount) VALUES \n(''TEST-001'', CURRENT_DATE, ''Test Customer 1'', 1500.00),\n(''TEST-002'', CURRENT_DATE, ''Test Customer 2'', 2500.00);\n\nINSERT INTO receipt (receipt_id, receipt_date, party_name, amount, mode, bill_reference) VALUES \n(''REC-001'', CURRENT_DATE, ''Test Customer 1'', 1500.00, ''CASH'', ''TEST-001''),\n(''REC-002'', CURRENT_DATE, ''Test Customer 2'', 1000.00, ''CHEQUE'', ''TEST-002'');\n\nSELECT ''Test data inserted'' as result;\n\")",
+      "Bash(PGPASSWORD=admin123 psql -U postgres -d tally_dashboard -c \"SELECT bill_no, party_name, bill_amount, receipt_total, remaining_due, status FROM bill_status ORDER BY bill_no;\")",
+      "Bash(npm run:*)",
+      "Bash(timeout 10s npm run etl)",
+      "Bash(timeout 30s npm test)",
+      "Bash(timeout 5s npm run dev)",
+      "Bash(PORT=3002 timeout 5s npm start)",
+      "Bash(PGPASSWORD=admin123 psql:*)",
+      "Bash(PORT=3005 npm start)",
+      "Bash(PORT=3006 npm start)",
+      "Bash(powershell:*)",
+      "Bash(npm install:*)",
+      "Bash(PORT=3007 npm start)",
+      "Bash(PORT=3001 timeout 10s npm start)",
+      "Bash(npm start)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
